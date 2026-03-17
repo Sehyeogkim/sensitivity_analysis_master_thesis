@@ -1,0 +1,18 @@
+{
+  "_comment": "Parameter ranges for LHS sampling. Update with actual research values.",
+  "hemodynamic": {
+    "Q":     {"name": "Inlet flow rate",       "unit": "mL/s",      "low": 3.0,   "high": 8.0},
+    "P_sys": {"name": "Systolic pressure",     "unit": "mmHg",      "low": 100.0, "high": 160.0},
+    "P_dia": {"name": "Diastolic pressure",    "unit": "mmHg",      "low": 60.0,  "high": 100.0},
+    "R1":    {"name": "Windkessel resistance 1","unit": "Pa·s/m³",   "low": 1e7,   "high": 5e8},
+    "R2":    {"name": "Windkessel resistance 2","unit": "Pa·s/m³",   "low": 1e8,   "high": 1e9},
+    "C":     {"name": "Windkessel compliance", "unit": "m³/Pa",     "low": 1e-9,  "high": 1e-7}
+  },
+  "morphology": {
+    "SS":    {"name": "Stenosis severity",     "unit": "%",         "low": 30.0,  "high": 80.0},
+    "PL":    {"name": "Plaque length",         "unit": "mm",        "low": 5.0,   "high": 20.0},
+    "FCT":   {"name": "Fibrous cap thickness", "unit": "mm",        "low": 0.05,  "high": 1.0},
+    "LCS":   {"name": "Lipid core size",       "unit": "mm",        "low": 1.0,   "high": 8.0},
+    "VC":    {"name": "Vessel curvature",      "unit": "1/mm",      "low": 0.0,   "high": 0.05}
+  }
+}

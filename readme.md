@@ -1,30 +1,100 @@
-1. so our goal is to analyze the input and output relationship
+# LangGraph CAE Pipeline Agent
 
-input parameters: input_solid.csv (X)
-(X1: Hemodynamic parameters)
-(X2: Morphology parameters)
+An agentic system built with LangGraph that automates a 7-step Computational Fluid/Solid Mechanics pipeline for **Plaque Sensitivity Analysis** — running 1000 parameter cases through CAD generation, meshing, HPC simulation, post-processing, and sensitivity analysis.
 
-output Von mises stress: amp, peak at ./output_VMS.csv (Y1)
+**Part of**: Master's Thesis — Cardiovascular Biomechanics, Plaque Rupture Risk Analysis
 
-output FFR : ./output_FFR.csv (Y2)
+---
 
+## What This Does
 
+Automates the full simulation pipeline:
 
-1. train surrogate model (GRP or PCE both on a separte python script)
+```
+LHS Sampling → CAD → Meshing → Q-Ramp CFD → 1D+3D Fluid Sim → Solid FEM → Post-Processing → Sensitivity Analysis
+```
 
-2. test surrogate model (with the 20% of the data sets)
+The agent handles:
+- Step transitions across Local / WK1/WK2 / Harvey HPC environments
+- Per-case state tracking across 1000 parameter samples
+- LLM-based error diagnosis and auto-recovery (mesh failures, solver divergence)
+- Quality validation at each step
+- Streamlit dashboard for real-time monitoring
 
-3. get Soblov indices from X -> Y1 and X -> Y2
+---
 
-4. here's my Questions. 
+## Pipeline Overview
 
-Q1. what if we would like to consider abou the (X, Y2) -> Y1??
-(I mean regard FFR as input, is it adequate??)
+| Step | Description | Tool | Output |
+|------|-------------|------|--------|
+| 0 | LHS parameter sampling | SALib | `parameters.csv` |
+| 1 | CAD geometry generation | Inventor / Python-OCC | `*.stp` files |
+| 2 | Meshing (fluid + solid) | gmsh + Simmetrix | `fluid.vtu`, `solid.msh` |
+| 3 | Q-Ramp CFD | SimVascular (Harvey) | `slab/`, `Flow_hist/` |
+| 4a | 1D pulsatile simulation | Tree Solver | `_1D.json` |
+| 4b | 3D steady CFD | SimVascular (Harvey) | `wall_peak.csv` |
+| 5 | 3D solid FEM | ANSYS pymapdl (Harvey) | `fc_peak.vtu` |
+| 6 | Post-processing | VTK | `FFR.csv`, `stress.csv` |
+| 7 | Sensitivity analysis | GPR + SALib Sobol | `sobol_indices.json` |
 
-Q2. I would like to treat combination of X  as input which would be more affective to the Y1.
-(so goal is to find the high affective combination of X)
-(note in the X)
+---
 
-Q3. compare the effect of the HEmoddynamic vs Morpholgoy combinatio or the strongest one whatever it takes.
+## Project Structure
 
-Q4. what else can we do with this data set?
+```
+├── CLAUDE.md                  # AI agent briefing (Claude CLI)
+├── docs/
+│   ├── pipeline_design.md     # Detailed pipeline spec
+│   └── architecture.md        # Agent architecture & state design
+├── src/
+│   ├── state.py               # SimulationPipelineState
+│   ├── pipeline_graph.py      # LangGraph StateGraph
+│   ├── tools/                 # One tool per pipeline step
+│   ├── validators/            # Mesh/CAD/result quality checks
+│   ├── agents/                # LLM-based error analyzer
+│   └── dashboard.py           # Streamlit UI
+├── tests/
+├── .env.example
+└── pyproject.toml
+```
+
+---
+
+## Quick Start
+
+```bash
+# Install dependencies
+pip install -e ".[dev]"
+
+# Copy and fill env vars
+cp .env.example .env
+
+# Run mock pipeline (10 cases, no real HPC)
+python -m src.pipeline_graph --mock --cases 10
+
+# Launch dashboard
+streamlit run src/dashboard.py
+```
+
+---
+
+## Tech Stack
+
+- **Agent**: LangGraph + LangChain
+- **LLM**: Claude API (`claude-sonnet-4-6`)
+- **Meshing**: gmsh, Simmetrix
+- **CFD/FEM**: SimVascular, ANSYS pymapdl
+- **HPC**: Harvey (SLURM via SSH)
+- **SA**: SALib (Sobol), scikit-learn (GPR)
+- **UI**: Streamlit
+
+---
+
+## Timeline
+
+| Week | Focus | Dates |
+|------|-------|-------|
+| 1 | LangGraph basics + mock pipeline graph | 3/17 ~ 3/23 |
+| 2 | CAD + Meshing agents | 3/24 ~ 3/30 |
+| 3 | Solver + Post-processing agents (HPC) | 3/31 ~ 4/6 |
+| 4 | SA + Dashboard + demo | 4/7 ~ 4/13 |
