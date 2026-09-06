@@ -1,0 +1,72 @@
+Density: 1.06
+Viscosity: 0.04
+
+Number of Timesteps: 5000
+Time Step Size: 0.0008571
+
+Number of Timesteps between Restarts: 100
+Number of Force Surfaces: 1 
+Surface ID's for Force Calculation: 1
+Force Calculation Method: Residual Based
+Print Average Solution: True
+Print Error Indicators: False
+
+Step Construction: 0 1 0 1 0 1 0 1
+
+Time Varying Boundary Conditions From File: False
+#BCT File Type: DAT                                   
+#Number of BCT Files
+
+Number of Surfaces with Time Varying Pressure Values: 1
+List of Surfaces with Time Varying Pressure Values: 2
+Time Varying Pressure Values From File: True
+
+
+########## Setting for a Resistance
+#Number of Resistance Surfaces: 1 #resistance surface
+#List of Resistance Surfaces: 3 # resistance surface Id - 3 (outlet)
+#Resistance Values: 133300 
+#Number of Surfaces which Output Pressure and Flow: 2 #pressure, flow data를 기록할 표면의 수 -inlet outlet - 2개.
+#List of Output Surfaces: 2 3 #inlet, outlet ID 번호
+
+
+#read_restart : True
+#restart_infile
+
+
+#RCR Setting
+Number of RCR Surfaces: 1
+List of RCR Surfaces: 3
+RCR Values From File: True
+
+#outlet - preessure, velocity history
+Number of Surfaces which Output Pressure and Flow: 2
+List of Output Surfaces: 2 3
+
+
+Pressure Coupling: Implicit
+Number of Coupled Surfaces: 1 #outlet 1개
+
+
+
+Backflow Stabilization Coefficient: 0.2
+Residual Control: False
+Residual Criteria: 0.0001
+Minimum Required Iterations: 4
+svLS Type: NS
+Number of Krylov Vectors per GMRES Sweep: 100 
+Number of Solves per Left-hand-side Formation: 1  
+Tolerance on Momentum Equations: 0.05 
+Tolerance on Continuity Equations: 0.4 
+Tolerance on svLS NS Solver: 0.4 
+Maximum Number of Iterations for svLS NS Solver: 1 #만약에 01010101 로 수렴이 안된다면, 최대 몇까지 허용?
+Maximum Number of Iterations for svLS Momentum Loop: 2
+Maximum Number of Iterations for svLS Continuity Loop: 400
+Time Integration Rule: Second Order
+Time Integration Rho Infinity: 0.5
+Flow Advection Form: Convective
+Quadrature Rule on Interior: 2
+Quadrature Rule on Boundary: 3
+
+Reference Temperature Value for Do-Nothing BC:0
+Number of Surfaces with Boundary Condition Control:0
